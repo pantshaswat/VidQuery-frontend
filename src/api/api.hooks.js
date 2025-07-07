@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, Upload, Play, Pause, Volume2, VolumeX, Home, Video, Clock, FileText, Eye, Mic, X, Check, AlertCircle } from 'lucide-react';
 
 // API Configuration
-export const API_BASE_URL = 'https://d07da7eed133.ngrok-free.app';
+export const API_BASE_URL = 'https://sport-edinburgh-assets-dressing.trycloudflare.com';
 
 // Custom hooks for API calls
 const useUploadVideo = () => {
@@ -22,6 +22,7 @@ const useUploadVideo = () => {
       const response = await fetch(`${API_BASE_URL}/upload-video`, {
         method: 'POST',
         headers: {
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
         },
         body: formData,
       });
@@ -61,6 +62,7 @@ const useSearch = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
         },
         body: JSON.stringify({
           query,
@@ -106,6 +108,7 @@ const useVideos = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
         },
       });
 
@@ -137,6 +140,7 @@ const useVideos = () => {
       const response = await fetch(`${API_BASE_URL}/videos/${videoId}`, {
         method: 'DELETE',
         headers: {
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
         },
       });
       
