@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, Upload, Play, Pause, Volume2, VolumeX, Home, Video, Clock, FileText, Eye, Mic, X, Check, AlertCircle } from 'lucide-react';
 
 // API Configuration
-export const API_BASE_URL = 'http://localhost:8000';
+export const API_BASE_URL = 'https://16fe-3-81-15-101.ngrok-free.app';
 
 // Custom hooks for API calls
 const useUploadVideo = () => {
