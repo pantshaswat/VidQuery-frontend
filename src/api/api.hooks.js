@@ -21,20 +21,23 @@ const useUploadVideo = () => {
 
       const response = await fetch(`${API_BASE_URL}/upload-video`, {
         method: 'POST',
+        headers: {
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
+        },
         body: formData,
       });
 
       if (!response.ok) {
         const errorText = await response.text();
         console.error('Upload failed:', errorText);
-        throw new Error('Upload failed');
-
+        throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
       }
 
       const result = await response.json();
       setUploadProgress(100);
       return result;
     } catch (err) {
+      console.error('Upload error:', err);
       setError(err.message);
       throw err;
     } finally {
@@ -59,6 +62,7 @@ const useSearch = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
         },
         body: JSON.stringify({
           query,
@@ -68,13 +72,16 @@ const useSearch = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Search failed');
+        const errorText = await response.text();
+        console.error('Search failed:', errorText);
+        throw new Error(`Search failed: ${response.status} ${response.statusText}`);
       }
 
       const result = await response.json();
       console.log('Search results:', result);
       return result;
     } catch (err) {
+      console.error('Search error:', err);
       setError(err.message);
       throw err;
     } finally {
@@ -93,15 +100,35 @@ const useVideos = () => {
   const fetchVideos = async () => {
     setLoading(true);
     setError(null);
+    
+    console.log('Fetching videos from:', `${API_BASE_URL}/videos`);
+    
     try {
-      const response = await fetch(`${API_BASE_URL}/videos`);
+      const response = await fetch(`${API_BASE_URL}/videos`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
+        },
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (!response.ok) {
-        throw new Error('Failed to fetch videos');
+        const errorText = await response.text();
+        console.error('Fetch videos failed:', errorText);
+        throw new Error(`Failed to fetch videos: ${response.status} ${response.statusText}`);
       }
+
       const result = await response.json();
-      console.log('Fetched videos:', result);
-      setVideos(result.videos || []);
+      console.log('Fetched videos result:', result);
+      
+      // Handle both possible response formats
+      const videoList = result.videos || result || [];
+      setVideos(videoList);
     } catch (err) {
+      console.error('Fetch videos error:', err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -112,12 +139,20 @@ const useVideos = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/videos/${videoId}`, {
         method: 'DELETE',
+        headers: {
+          'ngrok-skip-browser-warning': 'true', // Add this for ngrok
+        },
       });
+      
       if (!response.ok) {
-        throw new Error('Failed to delete video');
+        const errorText = await response.text();
+        console.error('Delete failed:', errorText);
+        throw new Error(`Failed to delete video: ${response.status} ${response.statusText}`);
       }
+      
       await fetchVideos(); // Refresh list after deletion
     } catch (err) {
+      console.error('Delete error:', err);
       setError(err.message);
     }
   };
